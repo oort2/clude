@@ -1,0 +1,9 @@
+ <script>
+ const x = Number(prompt('숫자를 입력해주세요'))
+
+if( 10< x && x <20 ) {
+  console.log(`${x}은 조건에 맞습니다.`)
+} else{
+ console.log(`${x}은 조건에 맞지않습니다.`)
+	}
+  </script>
