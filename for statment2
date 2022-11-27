@@ -5,4 +5,11 @@ let numbers=[273,52,103,32,57,24,76]
 .filter((value)=>value<100)
 .forEach((value)=>{console.log(value)})
 
+ //일반 함수
+.filter(function(value){ return value % 2 === 1})
+.filter(function(value) {return value<100})
+.filter(function(value){ return value % 5 === 0}) 
+.forEach(function(value){console.log(value)
+	}) 
+
 </script>
