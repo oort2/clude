@@ -1,0 +1,20 @@
+<script>
+const carts = [
+	{	name:'사과',	price:7000,	qty:3	},
+	{	name:'고등어',price:8500,	qty:3	},
+	{	name:'배',	price:5000,	qty:3	},
+	{	name:'딸기',	price:10000,qty:3	}, ]
+
+let sum=0
+for(const cart of carts){ //value of carts
+	console.log(`${cart.name},가격=${cart.price} ,수량=${cart.qty}, 합계=${cart.price*cart.qty}`)
+	sum += cart.price*cart.qty}
+
+//for(const i in carts){ //index of carts
+//	console.log(`${carts[i].name},가격=${carts[i].price} ,수량=${carts[i].qty}, 합계=${carts[i].price*carts[i].qty}`)}
+
+console.log('============합계'+sum)
+
+
+
+</script>
