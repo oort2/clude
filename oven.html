@@ -3,9 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <title>oven</title>
+  <script>
+    
+document.addEventListener('DOMContentLoaded', ()=>{
+	const output = document.querySelector('#output')
+	const radios = document.querySelectorAll('[name=time]')  
+
+radios.forEach((radio)=>{  //
+	radio.addEventListener('change',(event)=>{
+		const current = event.currentTarget    
+		                                      
+		if(curren.checked){
+			output.textContent = `소요시간은은 ${current.value}이시군요!`
+		}	}) }) 
+
+})
+  </script>
 </head>
 <body>
-
+  
+<h3> #소요시간을 골라주세요</h3>
+<input type="radio" name="time" value="5분이내"> <span>5분이내</span>
+<input type="radio" name="time" value="15분이내"> <span>15분이내</span>
+<input type="radio" name="time" value="30분이내"> <span>30분이내</span>
+<input type="radio" name="time" value="30분이상"> <span>30분이상</span>
+<hr> <h3 id="output"></h3>
+  
 <p>let's cook! </p>
 
 </body>
