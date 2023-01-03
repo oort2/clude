@@ -1,0 +1,33 @@
+public class _12HashCodeEx03 {
+	public static void main(String[] args) {
+		Hash v1= new Hash(20); //100번
+		Hash v2= new Hash(20); //200번
+		System.out.println(v1.equals(v2)); //값이 20으로 동일. 
+		System.out.println(v1.hashCode()); //값이 20일떄 주소 
+		System.out.println(v2.hashCode());	
+		System.out.println("v1 객체 진짜 해쉬값:"+System.identityHashCode(v1)); //찐주소
+		System.out.println("v1 객체 진짜 해쉬값:"+System.identityHashCode(v2));	
+	}
+}
+
+class Hash {
+	int value;
+
+	public Hash(int value) {
+		this.value = value;}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Hash) {
+			Hash v = (Hash) obj;
+			return value == v.value;
+		} else 
+			return false;
+		
+	}
+	
+	public int hashCode() {
+		return value;
+		}
+
+}
