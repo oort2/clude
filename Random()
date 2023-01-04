@@ -1,0 +1,32 @@
+	//Math.random() 안쓰는 방법. 
+import java.util.Random;
+
+public class _33RandomEx3 {
+	final static int RECORD_NUM = 10; // 생성할 레코드의 수를 정한다.
+	final static String TABLE_NAME = "TEST_TABLE";
+	final static String[] CODE1 = { "010", "011", "017", "018", "019" };
+	final static String[] CODE2 = { "남자", "여자" };
+	final static String[] CODE3 = { "10대", "20대", "30대", "40대", "50대" };
+
+	static Random r = new Random();   //랜덤객체 생성
+	public static void main(String[] args) {
+		for (int i = 0; i < RECORD_NUM; i++) {
+			System.out.println("INSERT INTO" + TABLE_NAME + "VALUES(" +  
+		"'" + getRandArr(CODE1) + "'"     
+	  + "'" + getRandArr(CODE2) + "'" 
+	  + "'" + getRandArr(CODE3) + "'" 
+	  + ", " + getRand(100, 200) // 100~200
+					+ "); ");
+		}
+	}	
+
+	public static String getRandArr(String[] arr) {
+		return arr[r.nextInt(arr.length)]; 	}  
+	//r.nextInt(arr.length) =>arr.length가 5면 0~4까지 정수가 랜덤으로 뽑힘
+
+	public static int getRand(int from, int to) {
+		return r.nextInt(from)+(to-from);
+
+	}
+
+}
