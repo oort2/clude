@@ -1,0 +1,54 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+class Person implements Comparable <Person>{  //추가된 implements 부분. 
+	String name ; int age;
+	public Person(String name, int age) {
+		this.name = name;		this.age = age;	}
+    
+    	@Override
+	public int compareTo(Person o) {   
+		return name.compareTo(o.name);	}	
+    
+    	@Override
+		public boolean equals(Object obj) { //이렇게 동등객체 비교 해주지 않으면 값을 찾을 수 없어서 -1값이 나옴
+		Person p = (Person) obj;   //연결
+			return name.equals(p.name) && age==p.age;  //동등객체 정의 
+			//String에는 equals가 존재
+      
+      	@Override
+	public String toString() {
+		return "Person [name=" + name + ", age=" + age + "]";	}	
+}
+
+public class _04ListEx04 {
+	public static void main(String[] args) {
+		List<Person> li = new ArrayList<>();
+		li.add(new Person("홍길동", 10));
+		li.add(new Person("홍길동", 10));
+		li.add(new Person("홍길동", 30));
+		li.add(new Person("이정민", 10));
+		li.add(new Person("김윤민", 16));
+		Person p1 = new Person("김삿갓", 20);  
+		li.add(p1); 
+		print(li);
+		System.out.println("==========");
+       Collections.sort(li ); //Comparable이 없으면 에러가 나고.
+   	print(li); 
+   	System.out.println("==========");
+       Collections.sort(li, new Comparator<Person>() { //Person class에 implement 없이 하는 방법 
+
+		@Override
+		public int compare(Person o1, Person o2) { //implement 안하려면 오버라이드는 필요
+			return o1.age - o2.age;		} //나이 어센딩. age는 -로 표기 
+       }); //외부에서 받아서 해서 익명 클래스 사용
+		print(li); 		
+	}	
+	public static void print(List li) {
+		for(Object ob : li) {
+			System.out.println(ob);		}
+	}
+
+}
