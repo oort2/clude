@@ -1,0 +1,26 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+public class _10IteratorEx01 {
+	public static void main(String[] args) {
+	List<String> list = new ArrayList<String>(); //String 타입이라서 13이 2보다 작다고 여김. 
+	list.add("1");   	list.add("2"); 
+	list.add("13");     list.add("42"); 
+	list.add("5"); 
+	System.out.println(list);
+	Collections.sort(list);
+	System.out.println(list);
+	
+	Iterator it = list.iterator(); //반복자
+	
+	while(it.hasNext()) {
+		//Object obj = it.next();
+		System.out.println(it.next());
+	}
+	it.next(); //이건 에러.
+	//반복자는 한번만 잡힘. while문을 빠져나갔다는건 false라는 뜻이라 더이상 내용이 없음.  
+	}
+
+}
