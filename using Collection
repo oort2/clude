@@ -1,0 +1,112 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
+
+public class Ex23010601 {
+
+	public static void main(String[] args) throws FileNotFoundException {
+		List tlist = new ArrayList();
+		Scanner sc = new Scanner(new File("src/DataEx/Student.txt"));
+		while (sc.hasNext()) {
+			String line = sc.next();
+			KICStudent p = new KICStudent(line);
+			tlist.add(p);
+			// System.out.println(p);
+		}
+		System.out.println("1)반 1등부터 10등까지 프린트");
+		Iterator<KICStudent> it = tlist.iterator();
+		Map<Integer, List<KICStudent>> map1 = new HashMap<>(); //map1은 반이 있는지 확인, 비교를 위해 
+		while (it.hasNext()) {
+			KICStudent p = it.next();
+			if (!map1.containsKey(p.ban))
+				map1.put(p.ban, new ArrayList<>());
+			map1.get(p.ban).add(p);// 해당되는 주소를 거기다 집어넣어라
+		}
+
+		// 반별인원
+		int[] bancount = new int[4]; // 반별인원을 여기다 넣은 것
+
+		for (Integer m : map1.keySet()) {
+			System.out.println(m + "반========");
+			List<KICStudent> tl = map1.get(m);
+
+			bancount[m - 1] = tl.size(); // 반별 인원수
+
+			Collections.sort(tl);
+
+			for (int i = 0; i < 10; i++) {
+				System.out.println(tl.get(i));			}
+		}
+
+		System.out.println("2)반 평균을 1등 부터 4등까지 프린트 한다");
+		Map<Integer, Integer> map2 = new HashMap<>();
+		it = tlist.iterator();
+
+		while (it.hasNext()) {
+			KICStudent p = it.next();
+			if (!map2.containsKey(p.ban))
+				map2.put(p.ban, 0);
+			map2.put(p.ban, map2.get(p.ban) + p.total); // total
+		}
+		System.out.println(map2); // 합산
+
+		for (int i = 0; i < 4; i++) {
+			int m = i + 1; // 반
+			System.out.println(map2.get(m) + ":" + bancount[i]);
+			map2.put(m, map2.get(m) / bancount[i]); // 평균
+		}
+		System.out.println(map2);// 평균map
+		List<Entry<Integer, Integer>> setlist = new ArrayList<Entry<Integer, Integer>>(map2.entrySet());
+		Collections.sort(setlist, new Comparator<Entry<Integer, Integer>>() {
+
+			@Override
+			public int compare(Entry<Integer, Integer> o1, Entry<Integer, Integer> o2) {
+				// TODO Auto-generated method stub
+				return o2.getValue() - o1.getValue();			}
+		});
+
+		for (int i = 0; i < 4; i++) {
+			Entry<Integer, Integer> e = setlist.get(i);
+			System.out.println((i + 1) + "등" + e.getKey() + "반" + ":" + e.getValue());		}
+
+		System.out.println(tlist.size());	}
+
+}
+
+class KICStudent implements Comparable<KICStudent> {
+	int ban; 	String name;	int kor;	int eng;	int math;	int total;
+
+	KICStudent(String line) {
+		String[] str = line.split(",");
+		ban = Integer.parseInt(str[0]);
+		name = str[1];
+		kor = Integer.parseInt(str[2]);
+		eng = Integer.parseInt(str[3]);
+		math = Integer.parseInt(str[4]);
+		total = kor + eng + math;	}
+
+	public static int size() {
+		// TODO Auto-generated method stub
+		return 0;	}
+
+	@Override
+	public String toString() {
+		return "KICStudent [ban=" + ban + ", name=" + name + ", kor=" + kor + ", eng=" + eng + ", math=" + math
+				+ ", total=" + total + "]";	}
+
+	@Override
+	public int compareTo(KICStudent o) {
+		// TODO Auto-generated method stub
+		return o.total - total;
+	}
+
+}
