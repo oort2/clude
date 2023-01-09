@@ -1,0 +1,24 @@
+ interface LambdaInterface5{ void method();}
+ 
+class Outer{
+public int iv = 10;
+void method() {
+	int iv=40;   //final
+	LambdaInterface5 f5 =()->{
+		//int iv = 50; //에러
+		//iv = 50; //final 상수화 필요
+		System.out.println("outer.this.iv="+Outer.this.iv); //10
+		System.out.println("this.iv="+this.iv); //10
+		//Outer 클래스의 iv멤버 
+		System.out.println("iv="+iv); //40
+	};
+	f5.method(); //얘로 실행해서 결과값 출력
+} } 
+ public class LambdaEx04 {
+	public static void main(String[] args) {
+	 Outer o = new Outer();
+	 o.method();
+
+	}
+
+}
