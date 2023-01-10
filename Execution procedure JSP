@@ -1,0 +1,16 @@
+<body>
+<%
+//1.jar 파일 build path 연결 WEB-INF/lib/ojdbc11.jar  자료파일 넣기 
+Class.forName("oracle.jdbc.OracleDriver");  //2 Class.forName으로 드라이버 로딩
+Connection conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "id", "pw"); //is, pw는 가림
+//3. (url, username, password) database연결 
+//jdbc - jdbc 라이브러리 , oracle - 오라클로 연결 thin - 자바로 연결 (반대는 OCI - OS로 작동) 
+//@localhost -  내 내부 아이피로 접속  1521 - 포트번호 XE - 리스너
+ PreparedStatement pstmt = conn.prepareStatement("select * from student");
+//4. sql 전달 , result 받는다.  이거는 전체를 받는 것, insert나 다른 부분이 들어가면 또 다른 값 
+ResultSet rs = pstmt.executeQuery(); //select 를 이용 자료(resultSet) 받을때
+ResultSetMetaData rsmt = rs.getMetaData(); //column의 정보를 얻을 때 사용
+//1행(목차있는 부분) 뽑아내는 메서드. 보통은 잘 안씀. 그냥 이런게 있다고 알아두기만 해 
+%>
+
+</body>
