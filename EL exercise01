@@ -1,0 +1,14 @@
+<body>
+<%
+//model1방법
+//pageContext, request, session, application
+session.setAttribute("test","session test 속성");
+session.setAttribute("today",new Date());
+%>
+<form action ="elEx02.jsp" method="post">  
+//이거 만들기전까지는 404에러. 컨트롤타고 가는게 아니라 파일타는데 파일이 없어서.
+이름: <input type="text" name="name" value="홍길동">
+<input type= "submit" value="전송"> 
+</form>
+
+</body>
