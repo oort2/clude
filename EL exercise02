@@ -1,0 +1,23 @@
+<body>
+<%
+request.setCharacterEncoding("UTF-8");
+String tel ="010-111-0000"; %> 
+
+<h3>Jsp의 EL을 이용하여 파라미터와 속성값 출력 </h3>
+pageContext test 속성값: ${test}<br>     
+session test 속상값 : ${sessionScope.test}<br>
+today 속성값: ${today}<br>
+name 파라미터 값: ${param.name}<br>
+tel 변수값: EL로 표현 못함<br>
+tel 속성값: ${tel}<br>
+noAttribute 속성값:  ${noAttribute}<br>
+
+<h3>Jsp의 스크립트을 이용하여 파라미터와 속성값 출력 </h3>
+pageContext test 속성값: <%=pageContext.getAttribute("test") %><br>     
+session test 속상값 : <%=session.getAttribute("test")  %><br>
+today 속성값: <%=session.getAttribute("today") %> <br>
+name 파라미터 값: <%=request.getParameter("name") %><br>
+tel 변수값: <%=tel %><br>
+tel 속성값: <%=pageContext.getAttribute("tel") %><br>
+noAttribute 속성값: <%=pageContext.getAttribute("noAttribute") %><br> 
+</body>
