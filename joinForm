@@ -1,0 +1,40 @@
+WebServlet("/member/*")  //browser url    project-name/member/*
+public class MemberController extends MappingCode {
+	MemberDao memberdao = new MemberDao();
+	
+  @RequestMapping("joinForm")
+	public String joinForm(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("request ok");
+		return "/view/member/joinForm.jsp";
+	}
+	
+	@RequestMapping("joinPro")
+	public String joinPro(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("joinPro");
+	
+		Member member = new Member();
+		member.setId(request.getParameter("id"));
+		member.setPass(request.getParameter("pass"));
+		member.setName(request.getParameter("name"));
+		member.setGender(Integer.parseInt(request.getParameter("gender")));
+		member.setTel(request.getParameter("tel"));
+		member.setEmail(request.getParameter("email"));
+		
+		int count = memberdao.insertMember(member);
+		
+		String msg="";
+		String url="";
+		if (count>0) {
+			msg=member.getName()+"님의 가입이 완료 되었습니다";
+			url = "/member/loginForm";
+		} else {
+			msg="회원가입이 실패 했습니다";
+			url="/member/joinForm";  //member 컨트롤러 타는 것. 
+		}	
+		//자료 보내기
+		request.setAttribute("msg", msg);
+		request.setAttribute("url", url);
+		return "/view/alert.jsp"; //파일 경로타기 
+	}
+  
+}
