@@ -1,0 +1,24 @@
+@RequestMapping("loginForm")
+	public String loginForm(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("loginForm ok");
+		return "/view/member/loginForm.jsp";
+	}
+	
+	@RequestMapping("loginPro")
+	public String loginPro(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("loginPro ok");
+		String id = request.getParameter("id");  //loginForm 에 있어. 
+		String pass = request.getParameter("pass");
+		String msg="아이디를 확인하세요";
+		String url="/member/loginForm";
+		
+		Member mem = memberdao.selectOne(id);
+		if (mem!=null) {
+			if (pass.equals(mem.getPass())) {
+				request.getSession().setAttribute("id", id);
+				msg=mem.getName() + "님이 로그인 하였습니다";
+				url="/member/index";
+			} else {				
+				msg="비밀번호를 확인 하세요";				
+			}					
+		}	
