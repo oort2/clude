@@ -1,0 +1,27 @@
+public class MemberDao {
+
+public int insertMember(Member member) {	
+		Connection conn = getConnection();
+		PreparedStatement pstmt=null;
+		String sql="insert into member values (?,?,?,?,?,?,?)";
+		try {
+			pstmt = conn.prepareStatement(sql);  //pstmt 에 sqp 값을 넣구
+			pstmt.setString(1, member.getId());
+			pstmt.setString(2, member.getPass());
+			pstmt.setString(3, member.getName());
+			pstmt.setInt(4, member.getGender());
+			pstmt.setString(5, member.getTel());
+			pstmt.setString(6, member.getEmail());
+			pstmt.setString(7, "");
+	        //jspPro/member/joinForm
+			//jspPro/view/member/joinForm.jsp
+
+			int count = pstmt.executeUpdate(); //insert 갯수  return . 
+			return count;   //다입력하면 7개를 받고. 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} //4. sql 전달 , result 받는다
+		return 0;	}  //오류나면 0으로 출력
+    
+    }
