@@ -1,0 +1,57 @@
+@RequestMapping("memberUpdateForm")
+	public String memberUpdateForm(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		String login = (String) session.getAttribute("id");
+		if(login !=null && !login.equals("")) {
+			Member mem = memberdao.selectOne(login);
+			request.setAttribute("member", mem);
+			return "/view/member/memberUpdateForm.jsp";  
+		} else {
+			String msg="로그인이 필요합니다.";
+			String url="/member/loginForm";
+			
+			request.setAttribute("msg", msg);
+			request.setAttribute("url", url);
+            return "/view/alert.jsp";		
+		}
+		
+	}
+
+	@RequestMapping("memberUpdatePro")
+	public String memberUpdatePro(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession();
+		String login = (String) session.getAttribute("id");
+		String msg="로그인이 필요합니다.";   //이게 기본값이니까 제일 위에 빼야함
+		String url="/member/loginForm";
+		
+		if(login !=null && !login.equals("")) {	  //로그인 상태 /* 세션확인이 되어야 그 다음에 뭘하던 말던 하니까 */ 
+		request.setCharacterEncoding("UTF-8");	
+			
+		Member member = new Member();
+		member.setId(login); //로그인 되어있는 창에서 바꾸는거니까. 
+		member.setPass(request.getParameter("pass"));
+		member.setName(request.getParameter("name"));
+		member.setGender(Integer.parseInt(request.getParameter("gender")));
+		member.setTel(request.getParameter("tel"));
+		member.setEmail(request.getParameter("email"));
+		member.setPicture(request.getParameter("picture"));
+		Member oldmember = memberdao.selectOne(login); //저장되어있는 회원자료 읽는다.
+		if(oldmember!=null) {
+			if(oldmember.getPass().equals(member.getPass())) {
+				//id , data도 있는것 확인했어. 그럼 이제 패스워드 확인할 차례
+				int num = memberdao.updateMember(member); //비밀번호가 맞으면 수정
+				if(num>0) {//정보가 수정되었다는 말.
+					msg=member.getName()+"님의 정보가 수정되었습니다.";
+					url="/member/memberInfo";
+				}else {
+					msg="정보 수정이 실패했습니다.";
+					url="/member/memberUpdateForm";	}				
+			}else {
+				msg="비밀번호가 틀렸습니다.";
+				url="/member/memberUpdateForm";
+				}		}				
+		}	//얘는 else값이 아닌 일단 다 출력되는 값으로 나와야 오류가 안뜸
+			request.setAttribute("msg", msg);
+			request.setAttribute("url", url);
+            return "/view/alert.jsp";			}
+		 //end method
