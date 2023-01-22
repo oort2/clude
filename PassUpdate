@@ -1,0 +1,42 @@
+@RequestMapping("memberPassUpdate")
+	public String memberPassUpdate(HttpServletRequest request, HttpServletResponse response) {
+	HttpSession session = request.getSession();
+	String id = (String) session.getAttribute("id");
+	String msg="로그인이 필요합니다.";   
+	String url="/member/loginForm";
+	if( id != null && !id.equals("")) {
+		return "/view/member/memberPassUpdate.jsp";
+	}
+	request.setAttribute("msg", msg);
+	request.setAttribute("url", url);
+    return "/view/alert.jsp";
+	
+	}
+	
+	@RequestMapping("memberPassPro")
+	public String memberPassPro(HttpServletRequest request, HttpServletResponse response) {
+	HttpSession session = request.getSession();
+	String login = (String) session.getAttribute("id");
+	String pass = request.getParameter("pass");
+	String chgpass1 = request.getParameter("chgpass1");
+	String msg="로그인이 필요합니다.";   
+	String url="/member/loginForm";
+	if(login !=null && !login.equals("")) {	 //로그인상태
+		Member member = memberdao.selectOne(login);
+		
+		if(member.getPass().equals(pass)) { //패스워드까지 확인
+			int num = memberdao.changePass(login, chgpass1);  //로그인으로 들어가야함
+			if(num>0) {
+				msg=member.getName()+"님의 비밀번호가 변경되었습니다.";
+				url="/member/index";
+			}else {
+				msg="비밀번호가 변경 실패했습니다.";
+				url="/member/memberPassUpdate";			}			
+		}else {
+			msg="비밀번호가 틀렸습니다.";
+			url="/member/memberPassUpdate";		}				
+	}
+	request.setAttribute("msg", msg);
+	request.setAttribute("url", url);
+    return "/view/alert.jsp";	
+	}
