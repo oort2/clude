@@ -1,0 +1,20 @@
+@RequestMapping("memberList")  
+	public String memberList(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		String login = (String) session.getAttribute("id");
+		if(login.equals("admin")) {  //admin이어야지만 실행할 수있어.
+			List<Member> list = memberdao.selectAll();
+			/* 어드민이면 셀렉트 올을 해라(다오에서 만들어야함). 근데 그때 한명만 보이면 안되니까 콜랙션을 해야함*/
+			request.setAttribute("list", list);
+			return "/view/member/memberList.jsp"; //joinForm.js copy
+		} else {
+			String msg="확인불가입니다.";
+			String url="/member/loginForm";
+			
+			request.setAttribute("msg", msg);
+			request.setAttribute("url", url);
+            return "/view/alert.jsp";		        
+      //dml  dql에 따라 다름. dml은 패스워드(자료변경이니까)가 필요한경우가 많음. 값변경되었는지 확인하는 if문도 필요. 
+      //dql은 select를 이용
+		}		
+	}
