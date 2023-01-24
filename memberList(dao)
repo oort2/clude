@@ -1,0 +1,28 @@
+public List<Member> selectAll() {
+		Connection conn = getConnection();
+		PreparedStatement pstmt=null;
+		String sql="select * from member";  //셀렉트 올이라 웨어 조건절로 만들지 x
+		ResultSet rs=null;		
+		List<Member> list = new ArrayList<>();//초기화 필요
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {  //if로 하면 하나만 존재해서 while로 함 admin은 다 봐야하니까. 
+				Member m = new Member();
+				m.setId(rs.getString("id"));
+				m.setPass(rs.getString("pass"));
+				m.setName(rs.getString("name"));
+				m.setGender(rs.getInt("gender"));
+				m.setTel(rs.getString("tel"));
+				m.setEmail(rs.getString("email"));
+				m.setPicture(rs.getString("picture"));	
+				list.add(m);			
+			}			
+		} catch (SQLException e) {
+			e.printStackTrace();		}		
+		return list;
+		
+	}
+		
+	}
+	
