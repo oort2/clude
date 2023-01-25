@@ -1,0 +1,29 @@
+@RequestMapping("pictureimgForm")  
+	public String pictureimgForm(HttpServletRequest request, HttpServletResponse response) {
+		/* 1. upload folder를 만든다 /webapp/view/member/picture
+		 * 2. @RequestMapping("picturePro") -> 이미지를 폴더에 저장한다.
+		 * 3. 파일네임만 픽쳐pro에 보낸 것. 
+		 */		
+		return "/view/member/pictureimgForm.jsp";
+	}
+	
+	@RequestMapping("picturePro")  
+	public String picturePro(HttpServletRequest request, HttpServletResponse response) {
+	String path= request.getServletContext().getRealPath("/")+"view/member/picture/";
+	System.out.println(path);
+	String filename = null;
+		try {
+			MultipartRequest multi = new MultipartRequest(request, path, 10*1024*1024, "UTF-8");
+			filename = multi.getFilesystemName("picture");
+			//픽쳐이미지그림의 picture 이름을 가져온 것
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		System.out.println(filename);
+		request.setAttribute("filename", filename);
+		return "/view/member/picturePro.jsp";
+		
+		
+		
+		
+	}
