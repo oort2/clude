@@ -1,0 +1,61 @@
+	@WebServlet("/board/*")
+public class BoardController extends ** {
+	BoardMybatisDao bd = new BoardMybatisDao();
+
+	@RequestMapping("index")
+	public String index(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("request ok");
+		request.setAttribute("name", "/board/*");
+		return "/view/index.jsp"; // web-app/index.jsp !!!!!! web-app/member/index.jsp ---> web-app/view/index.jsp
+	}
+  
+  
+  @RequestMapping("boardForm")
+	public String boardForm(HttpServletRequest request, HttpServletResponse response) {
+
+		System.out.println("board ok");
+		return "/view/board/boardForm.jsp";
+	}
+
+	@RequestMapping("boardPro")
+	public String boardPro(HttpServletRequest request, HttpServletResponse response) {
+		// 저장 path 확인
+		String path = request.getServletContext().getRealPath("/") + "view/board/img/";
+		String filename = null;
+		String msg = "게시물 등록실패";
+		String url = "/board/boardForm";
+
+		HttpSession session = request.getSession();
+		String boardid = (String) session.getAttribute("boardid"); // 1.공지사항, 2:자유게시판 3:qna
+		// 세션저장은 보드리스트에서 함 세션이 아예 없을 수도 있으니 기본으로 1로 하라고
+		if (boardid == null)
+			boardid = "1";
+
+		try {
+			MultipartRequest multi = new MultipartRequest(request, path, 10 * 1024 * 2014, "UTF-8");
+			Board board = new Board();
+			// 업로드가 들어갈 수 있는 방법은 multi. 리퀘스트로 넣으면 업로드가 안되니까 꼭 주의!
+			board.setName(multi.getParameter("name"));
+			board.setPass(multi.getParameter("pass"));
+			board.setSubject(multi.getParameter("subject"));
+			board.setContent(multi.getParameter("content"));
+			board.setFile1(multi.getFilesystemName("file1"));
+			board.setBoardid(boardid); // 우선 공지사항
+			if (board.getFile1() == null)
+				board.setFile1(" ");
+
+			int num = bd.insertBoard(board);
+			if (num > 0) {
+				msg = "게시물 등록 성공";
+				url = "/board/boardList";
+				System.out.println(board);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		request.setAttribute("msg", msg);
+		request.setAttribute("url", url);
+
+		return "/view/alert.jsp";
+	}
