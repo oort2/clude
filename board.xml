@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+<!-- 마이바티스는 같은 네임스페이스나 id가 존재하면 안됭. 여기선 네임스페이스를 보드로 바꿈 -->
+
+<insert id="insertBoard" parameterType = "board">
+insert into board
+		values
+		(boardseq.nextval,#{name},#{pass},#{subject},#{content},#{file1},
+		sysdate, 0,boardseq.currval,#{reflevel},#{refstep},#{boardid})
+
+</insert>
+<select id = "boardCount" parameterType="string" resultType="int">
+select count(*) from board where boardid = #{boardid}
+</select>
+
+<select id = "boardList" parameterType="map" resultType="board">
+select * from(
+select rownum rnum, a.* from
+(select * from board where boardid = #{boardid} order by ref desc, refstep) a)
+where rnum between #{start} and #{end}
+</select>
+
+<select id = "boardOne" parameterType="int" resultType="board">
+select * from board where num = #{num}
+</select>
+
+<insert id="insertReply" parameterType = "board">
+insert into board
+		values
+		(boardseq.nextval,#{name},#{pass},#{subject},#{content},#{file1},
+		sysdate, 0, #{ref}, #{reflevel}, #{refstep}, #{boardid})
+
+</insert>
+
+<update id="refStepAdd" parameterType = "map">
+update board set refstep = refstep +1
+		where ref = #{ref} and refstep > #{refstep}
+</update>
+
+<delete id="boardDelete" parameterType = "map">
+delete from board where num = #{num}
+ and pass=${pass}
+</delete>
+
+</mapper>
