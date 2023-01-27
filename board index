@@ -1,0 +1,30 @@
+@Controller
+@RequestMapping("/board/")
+public class BoardController {
+	
+	@Autowired
+	BoardMybatisDao bd;
+
+	Model m;
+	HttpSession session;
+	HttpServletRequest request;
+	
+	@ModelAttribute  //초기화 작업을 한다. 객체 초기화시에 사용한다. 
+	void init(HttpServletRequest request, Model m) {
+		this.request=request;
+		this.m=m;
+		session = request.getSession();
+
+	}	
+	
+	
+	@RequestMapping("index")
+	public String index() {
+		m.addAttribute("name", "/board/*");
+		return "/index"; 
+	}
+
+	@GetMapping("boardForm")
+	public String boardForm() {
+		return "/board/boardForm";
+	}
