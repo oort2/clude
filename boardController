@@ -141,3 +141,49 @@ public class BoardController {
 
 		return "/board/boardInfo";
 	}
+@RequestMapping("replyForm")
+	//http://localhost:8080/kic_model2pro/board/replyForm?num=34&ref=34&refstep=0&reflevel=0&pageNum=1
+	public String replyForm(int num) {
+		
+		Board board = bd.boardOne(num);
+		String boardid = (String) session.getAttribute("boardid");
+		if(boardid == null) boardid = "1";
+		String boardName = "";
+		switch(boardid) {
+		case "1" : boardName = "공지사항"; break;
+		case "2" : boardName = "자유게시판"; break;
+		case "3" : boardName = "QnA"; break;
+		}
+		
+		c.addAttribute("boardName", boardName);		
+		c.addAttribute("board", board);
+		return "/board/replyForm";
+	}
+
+	@RequestMapping("replyPro")
+	public String replyPro(Board board) {
+		
+		String boardid = (String) session.getAttribute("boardid");
+		if(boardid == null) boardid = "1";
+		
+		board.setFile1("");
+		board.setBoardid(boardid);
+		
+		String msg = "답변 등록시 오류 발생";
+		String url = "/board/replyForm?num=" + board.getNum();
+		bd.refStepAdd(board.getRef(), board.getRefstep());
+		
+		board.setRef(board.getRef());	//원조 새글 ref
+		board.setReflevel(board.getReflevel() + 1); // 기준글 reflevel + 1
+		board.setRefstep(board.getRefstep() + 1);	// print 순서
+		
+		   
+		if(bd.insertReply(board) > 0) {
+			msg = "답변 등록 완료";
+			url = "/board/boardList";
+		};
+		
+		c.addAttribute("msg", msg);		
+		c.addAttribute("url", url);
+		return "/alert";
+	}
