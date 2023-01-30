@@ -187,3 +187,33 @@ public class BoardController {
 		c.addAttribute("url", url);
 		return "/alert";
 	}
+@RequestMapping("boardDeleteForm")
+	public String boardDeleteForm(int num) {
+		
+		c.addAttribute("num", num);
+		return "/board/boardDeleteForm";
+	}
+	
+	@RequestMapping("boardDeletePro")
+	public String memberDeletePro(int num, String pass) throws Exception  {
+		
+		Board board = bd.boardOne(num);
+		String msg = "비밀번호가 틀렸습니다.";
+		String url = "/board/boardDeleteForm?num=" + num;
+			if (board.getPass().equals(pass)) { //password 확인
+				if(bd.boardDelete(num,pass)>0){
+				msg = "삭제 되었습니다";
+				url = "/board/boardList";
+				}
+			}
+		c.addAttribute("msg", msg);
+		c.addAttribute("url", url);
+		return "/alert";
+	}
+	
+	
+	
+	
+	
+	
+	}
