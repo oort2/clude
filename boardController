@@ -211,9 +211,55 @@ public class BoardController {
 		return "/alert";
 	}
 	
+	@RequestMapping("boardUpdateForm")
+	public String boardUpdateForm(int num) {
+		Board board = bd.boardOne(num);
+		c.addAttribute("board", board);
+		return "/board/boardUpdateForm";
+	}
 	
+	@RequestMapping("boardUpdatePro")
+	public String boardUpdatePro(@RequestParam("f") MultipartFile multipartFile, Board board) {
+		
+		Board dbboard = bd.boardOne(board.getNum());
+		
+		String path = request.getServletContext().getRealPath("/") + "view/board/img/";
+		
+		if (!multipartFile.isEmpty()) {
+			File file = new File(path, multipartFile.getOriginalFilename());
+			String filename = multipartFile.getOriginalFilename();
+			board.setFile1(filename);
+			
+			try {
+				multipartFile.transferTo(file);
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			board.setFile1(dbboard.getFile1());
+		}
+		
+		String msg = "비밀번호가 틀렸습니다.";
+		String url = "/board/boardUpdateForm?num=" +board.getNum();
+		// 비밀번호 확인
+			if (board.getPass().equals(dbboard.getPass())) { //password 확인
+				// 수정하기
+				if(bd.boardUpdate(board)>0){
+				msg = "수정 완료";
+				url = "/board/boardInfo?num="+board.getNum();
+				} else {
+					msg = "수정 실패 ";
+				}
+			}
+		c.addAttribute("msg", msg);
+		c.addAttribute("url", url);
+		return "/alert";
+	}
 	
-	
-	
+
 	
 	}
