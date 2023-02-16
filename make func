@@ -1,0 +1,23 @@
+#mylist1 보다 각각의 요소가 10이 더많은 요소를 가진 mylist2 생성
+mylist1=[1,2,3,4,5]
+mylist2=[] #11,12,13,14,15
+#1 반복문
+for n in mylist1:
+    mylist2.append(n+10)
+print(mylist2)
+
+#2 컴프리헨션
+mylist2=[n+10 for n in mylist1]
+print(mylist2)
+   
+#3 map 방식
+#map(함수,리스트) : 리스트의 각 요소에 함수 적용
+def add10(n):
+    return n+10
+
+mylist2=list(map(add10,mylist1))
+print(mylist2) 
+
+#4 map 람다방식
+mylist2 = list(map(lambda n: n+10, mylist1))
+print(mylist2)
