@@ -1,0 +1,31 @@
+'''
+피보나치 수열 출력하기
+   피보나치 수열은 0,1로 시작하고
+   앞의 두수를 더하여 새로운 수를 만들어 주는 수열을 의미한다.
+   피보나치 수열의 갯수를 입력받아 피보나치 수열을 갯수만큼 저장한
+   리스트를 생성하는 함수 fibo 함수를 작성하기
+   
+0 1 1 2 3 5 8 13 21 34 55 89 ....  
+[결과]
+피보나치 수열의 요소 갯수를 입력하세요(3이상의 값) :10
+fibo( 10 )=[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]   
+'''
+def fibo(n) :
+    fibolist = [0,1] 
+    num1 = 0
+    num2 = 1
+    num3 = num1+num2
+    fibolist.append(num3) 
+    for i in range(4,n+1) :  #4~n(입력된 숫자)
+        num1 = num2 
+        num2 = num3 
+        num3 = num1 + num2 
+        fibolist.append(num3)
+    return fibolist 
+
+num = int(input("피보나치 수열의 요소 갯수를 입력하세요(3이상의 값) :"))
+print("fibo(",num,")=",end="")
+print(fibo(num))
+
+
+'''
