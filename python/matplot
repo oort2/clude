@@ -1,0 +1,41 @@
+#자동차 연비데이터의 mpg값을 히스토그램으로 출력하기
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.rc("font",family="Malgun Gothic") #한글문제 해결
+
+
+
+df=sns.load_dataset("mpg")
+df.info()
+#히스토그램 출력
+df["mpg"].plot(kind="hist")
+#간격을 20개로 분리한 히스토그램 출력
+#linewidth=1:막대사이 간격
+df["mpg"].plot(kind="hist", bins=20, color='coral', \
+               figsize=(10,5),histtype='bar', linewidth=1)
+plt.title("MPG 히스토그램")
+plt.xlabel("mpg(연비)")
+
+
+
+#weight,mpg 데이터 산점도 출력하기
+#DataFrame: plot(kind="scatter") : #그래프 종류
+#x='mpg' : x축의 사용될 컬럼명
+#y='weight' :y축의 사용될 컬럼명
+# s=50: 점의 크기 지정
+df.plot(kind="scatter", x='mpg',y='weight',c='coral',\
+        s=50, figsize=(10,5))
+
+
+#matplot모듈을 이용하여 산점도 출력  /이런식으로도 출력할 수 있다는걸 알아두기만해
+plt.figure(figsize=(10,5)) #새로운 그래프창
+#scatter(x축데이터, y축데이터): 그래프 종류
+#df["mpg+"] : x축 데이터
+#df["weight"] : y축 데이터
+plt.scatter(df["mpg"],df["weight"],c="coral",s=50)
+
+
+
+df[["mpg","weight"]].corr() #correlation  mpg와 weight의 표준편차 확인
+df[["mpg","cylinders"]].corr() #correlation  mpg와 cylinders의 표준편차 확인
