@@ -1,0 +1,57 @@
+#결측값을 포함한 값의 건수
+df.deck.value_counts(dropna=False)
+df.deck.head()
+
+#isnull(): 결측값? 결측값인 경우 True, 일반값: False
+df.deck.head().isnull()
+#bnotnull(): 결측값 아님? 결측값인 경우 False, 일반값: True
+df.deck.head().notnull()
+
+
+
+#결측값의 갯수 조회
+df.isnull().sum()  #컬럼별 결측값 갯수
+df.isnull().sum(axis=0)  #컬럼별 결측값 갯수
+df.isnull().sum(axis=1)  #행별 결측값 갯수
+#결측값이 아닌 갯수 조회
+df.notnull().sum()
+df.notnull().sum(axis=0)
+df.notnull().sum(axis=1)
+###########################
+#dropna : 결측값 제거 
+#        inplace=True 있어야 자체 변경 가능
+#결측값이 500개 이상인 컬럼 제거하기
+#thresh=500: 결측값의 갯수가 500이상 
+
+df_tresh= df.dropna(axis=1, thresh=500)
+df_tresh.info()  #deck 사라짐 총 14개
+df.info()        #총 15개 
+
+
+
+
+
+#결측값을 가진 행을 제거 
+#subset=["age"] #컬럼 설정.
+#how='any'/'all' : 한개만 결측값/ 모든 값이 결측값
+#axis=0: god
+df_age = df.dropna(subset=["age"],how='any', axis=0)
+#한개라도 결측값이 있으면 지우라는 것 age 컬럼의 결측값이 있는 row들도 다 날린것 
+df_age.info()
+df.info()
+
+###################
+#fillna:  결측값을 다른 값으로 치환
+#       inplace=True 가 있어야 자체 객체 변경
+#fillna(치환할 값, 옵션)
+#1. age 컬럼의 값이 결측값인 경우 평균나이로 변경하기
+#1.age컬럼의 평균나이 조회하기
+age_mean= df["age"].mean()  #df 컬럼 age를 뽑아서 평균값을 가져와 
+age_mean
+age_mean = df.mean()["age"]  #df의 평균값중 age만 가져와 
+age_mean
+
+#치환하기
+df["age"].fillna(age_mean, inplace=True)
+#df[age]에 있는 결측치를 age_mean로 바꾸어라 
+df.info()
