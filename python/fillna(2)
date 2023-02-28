@@ -1,0 +1,37 @@
+#2.embart_town 컬럼의 결측값은 빈도수가 가장 많은 데이터로 치환하기
+#embark_town 중 가장 건수가 많은 값을 조회하기
+#value_counts()함수 결과의 첫번째 인덱스 값.
+df["embark_town"].value_counts()
+
+most_freq = df["embark_town"].value_counts().index[0]
+most_freq
+#value_counts() 함수 결과의 가장 큰 값의 인덱스 값을 순서대로 리턴
+most_freq = df["embark_town"].value_counts().idxmax()
+most_freq
+
+#embark_town컬럼의 결측값에 most_freq값을 치환하기
+#결측값의 인덱스 조회
+df[df["embark_town"].isnull()]  #2개존재
+df.iloc[[61,829]]["embark_town"] #결측값 확인
+df["embark_town"].fillna(most_freq, inplace=True) #결측값을 수정
+#df[embark_town]에 있는 결측치를 most_freq로 바꾸어라 
+
+df.iloc[[61,829]]["embark_town"]
+df.info()
+
+
+
+#embarked 컬럼을 앞의 값으로 치환하기
+#1. embarked 컬럼의 값이 결측값인 레코드 조회하기
+df[df["embarked"].isnull()]
+df.iloc[[61,829]]["embarked"] 
+df["embarked"][58:65] #61:C
+df["embarked"][825:831] #829:Q
+#앞의 데이터로 치환하기
+#method ="ffill" : 앞의 데이터로 치환
+#method ="bfill" : 뒤의 데이터로 치환
+#method ="backfill" : 뒤의 데이터로 치환
+df["embarked"].fillna(method="ffill", inplace=True) 
+df["embarked"][58:65] #61:C
+df["embarked"][825:831] #829:Q
+df.info()
