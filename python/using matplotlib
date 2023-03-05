@@ -1,0 +1,55 @@
+#대륙별 total_litres_of_pure_alcohol 섭취량 평균 시각화하기
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+drinks=pd.read_csv("data/drinks.csv")
+drinks.info()
+'''
+  country : 국가명
+  beer_servings : 맥주소비량
+  spirit_servings : 음료소비량
+  wine_servings : 와인소비량   
+  total_litres_of_pure_alcohol : 순수 알콜량
+  continent : 대륙명
+'''
+
+drinks.head()
+#전체 알콜 평균
+total_mean = drinks["total_litres_of_pure_alcohol"].mean()
+total_mean
+
+
+drinks["continent"]=drinks["continent"].fillna("OT")
+drinks.info()
+
+
+'''
+  대륙별 total_litres_of_pure_alcohol 섭취량 평균 시각화 하기
+'''
+
+
+plt.rc("font",family="Malgun Gothic")
+cont_mean=drinks.groupby("continent")["total_litres_of_pure_alcohol"].mean()
+cont_mean
+#대륙명: x축의 라벨
+continents = cont_mean.index.tolist()
+continents
+continents.append("Mean") #x축 라벨추가
+x_pos = np.arange(len(continents)) #0~6까지 추가
+
+#y축 데이터: 대륙별 평균값
+alcohol = cont_mean.tolist()
+alcohol
+alcohol.append(total_mean) #전체알콜섭취 평균
+
+
+#그래프화
+#plt.bar: 막대그래프
+#bar_list: 막대그래프의 막대 목록
+bar_list=plt.bar(x_pos,alcohol, align='center', alpha=0.5)
+bar_list
+#플롯을 전체 그리고 mean자리만 red로 바꾸기
+#bar_list[len(continents)-1] :bar_list[6] 막대
+#set_color('r): 색상설정. r: red
+
