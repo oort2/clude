@@ -1,0 +1,31 @@
+#중복데이터 처리
+df = pd.DataFrame({"c1":['a','a','b','a','b'],
+                   "c2":[1,1,1,2,2],
+                   "c3":[1,1,2,2,2]})
+df
+#duplicated(): 중복데이터 찾기.
+#중복된 경우 중복된 두번쨰 데이터부터 True리턴. 전체 행을 기준으로 중복검색 
+df_dup = df.duplicated()
+df_dup
+#1행과 2행은 같지만 1행이 f인 이유는 처음나와서 비교값이 없기떄문. 2는 t
+df[df_dup]  #중복데이터만 조회
+
+#c1컬럼을 기준으로 중복 검색
+col_dup = df["c1"].duplicated()
+col_dup
+df[col_dup] #c1 true만 나와야해(중복값만 출력)
+df
+
+
+#중복데이터를 제거하기
+#drop_duplicates(): 중복된 행을 제거하기
+df
+#df데이터의 중복없는 데이터 생성하기
+#df객체가 변경안됨
+df2=df.drop_duplicates()
+df2 #c1,c3칼럼을 기준으로 중복 검색
+col_dup = df[["c1","c3"]].duplicated()
+df[col_dup]
+#c1, c3칼럼을 기준으로 중복 제거하기
+df3 = df.drop_duplicates(subset=(["c1","c3"]))
+df3
