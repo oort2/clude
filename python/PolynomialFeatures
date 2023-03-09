@@ -1,0 +1,38 @@
+#알고리즘 선택: PolynomialFeatures.
+#LinearRegression: 선형 회귀분석(단항회귀분석): ax+b
+#PolynomialFeatures: 다향회귀분석: ax**2+bx+c
+
+from sklearn.preprocessing import PolynomialFeatures
+poly = PolynomialFeatures(2)  #2차항 
+X_train.shape
+X_train.iloc[0]
+#poly로 회귀분석하면 fit_transform() 형태로 나옴.
+X_train_poly=poly.fit_transform(X_train) #다항식에 처리가능한 데이터 변환
+X_train_poly.shape
+X_train_poly[0]
+
+
+#직선외에 선으로 표현할 수 있는건 LinearRegression로 씀
+pr = LinearRegression()
+pr.fit(X_train_poly, Y_train)  #모형학습
+#X_train_poly 모양으로 만들어진걸로 만듬
+
+#평가데이터도 다항식 데이터 변환
+X_poly = poly.fit_transform(X)
+y_hat=pr.predict(X_poly)  #pr의 프레딕트로 x폴리를 예측
+
+plt.figure(figsize=(10,5))
+ax1 = sns.kdeplot(Y, label="Y")
+ax2=sns.kdeplot(y_hat, label="y_hat", ax=ax1)
+plt.legend()
+plt.show()
+
+
+r_square = pr.score(X_poly, Y)
+r_square   #0.7146983300645128
+
+
+#결정계수: 1 -잔차제곱합/총변환량(u/v)
+u=((Y-y_hat)**2).sum()        
+v=((Y-Y.mean())**2).sum()
+1-(u/v)  #0.7146983300645127
