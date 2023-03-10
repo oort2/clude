@@ -1,0 +1,39 @@
+#독립변수, 종속변수 선택
+X=ndf[['cylinders','horsepower','weight']] #독립변수
+Y=ndf["mpg"] #종속변수
+X.info()
+
+
+#데이터 훈련/테스트데이터 분리
+X_train, X_test, Y_train, Y_test = \
+    train_test_split(X,Y,test_size=0.3, random_state=10)
+
+#알고리즘 선택: 선형회귀분석 
+from sklearn.linear_model import LinearRegression
+lr = LinearRegression()
+
+#학습하기
+lr.fit(X_train, Y_train)
+#예측하기
+y_hat=lr.predict(X)
+#평가하기
+r_square = lr.score(X, Y) #0.7062412894103278
+r_square  
+plt.figure(figsize=(10,5))
+ax1 = sns.kdeplot(Y, label="Y")
+ax2=sns.kdeplot(y_hat, label="y_hat", ax=ax1)
+plt.legend()
+plt.show()
+
+
+#단순회귀분석의 간단한 예
+#독립변수 1개, 종속변수 1개
+x=[[10],[5],[9],[7]]
+y=[100,50,88,75]
+model=LinearRegression()
+model.fit(x,y)
+result=model.predict([[7],[8],[4],[6]])
+result
+
+r_square = model.score(x,y)  #0.9824937752567611
+r_square  
