@@ -1,0 +1,67 @@
+import seaborn as sns
+import pandas as pd
+df= sns.load_dataset("titanic")
+df.info()
+#전처리
+#deck 컬럼 제거: 결측값이 너무 많다. 
+del df["deck"]
+df["embarked"].unique()
+#embarked 컬럼의 결측값을 최빈값으로 변경하기
+#최빈값 구하기
+df["embarked"].value_counts()
+df["embarked"].value_counts().idxmax()
+most_freq=df["embarked"].value_counts().idxmax()
+most_freq
+df["embarked"] = df["embarked"].fillna(most_freq)
+df.info()
+df.head()
+
+
+#독립변수(설명변수) 선택 
+df[["class","pclass"]] #pclass 선택
+df[["embarked", "embark_town"]] #embarked 선택
+
+ndf=df[["survived","pclass","sex","age","sibsp","parch","embarked"]]
+ndf.info()
+#age결측값 존재. => 결측값이 있는 행을 제거
+ndf = ndf.dropna(subset=['age'],axis =0)
+ndf.info()
+
+'''
+원핫인코딩: 문자열형 범주데이터를 모형이 인식하도록 숫자형 변형
+pd.get_dummies()
+
+     female  male
+0         0     1
+1         1     0
+2         1     0
+'''
+
+#sex 원핫인코딩하기
+onehot_sex = pd.get_dummies(ndf["sex"])
+onehot_sex  #값이 3개면 1,2,3 이렇게 진행 
+#ndf, onehot_sex 데이터 합하기
+ndf=pd.concat([ndf, onehot_sex],axis=1)
+ndf.info()
+
+#sex 컬럼 제거 
+del ndf["sex"]
+#embarked 원핫인코딩하기 
+onehot_embarked = \
+    pd.get_dummies(ndf["embarked"],prefix="town")
+onehot_embarked
+#ndf, onehot_embarked 데이터 합하기
+ndf = pd.concat([ndf,onehot_embarked],axis=1)
+#embarked 컬럼 삭제하기
+del ndf["embarked"]
+ndf.info()
+
+
+#설명변수, 목표변수 결정
+#설명변수(독립변수): survived 컬럼 제외한 변수들
+#목표변수(종속변수): survived 컬럼
+X=ndf[ndf.columns.difference(["survived"])]
+Y=ndf["survived"]
+X.info()
+Y.head()
+X.head()
