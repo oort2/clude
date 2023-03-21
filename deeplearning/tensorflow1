@@ -1,0 +1,168 @@
+cnn 텐서플로 배우기(이걸로 뭘 어떻게 할 수 있는지 배우는 것)
+ Tensorflow 설치 
+   1. https://www.microsoft.com/ko-kr  연결
+   2. 다운로드 센터 클릭
+   3. 개발자 도구 클릭
+   4. 05. Visual Studio 2015용 Visual C++ 재배포 가능 패키지 클릭 
+   5. 다운로드
+   6. vc_redist.x64.exe 선택 => 다음클릭=> 다운받기
+   7. 파일탐색기에서 vc_redist.x64.exe 실행
+   
+   ======================!!!!!!    annaconda 2022-10은 위의 1 ~ 7 까지 않해도 된다 
+   
+   8. anaconda prompt를 관리자모드로 실행
+   9. pip install tensorflow
+      tensorflow 버전 확인
+tensorflow 1.*      
+tensorflow 2.*
+1,2 버전사이에 호환이 안됨.
+'''
+
+import tensorflow as tf
+print(tf.__version__) #2.11.0 버전확인
+
+#현재 컴퓨터가 GPU?
+tf.config.list_physical_devices("GPU")
+#[]로 출력되면 GPU 환경 아님
+
+import pandas as pd
+pd.__version__
+import numpy as np
+np.__version__
+#텐서플로를 이용한 AND/OR 게이트 구현
+
+data = np.array([[0,0],[0,1],[1,0],[1,1]])
+
+andlabel = np.array([[0],[0],[0],[1]]) #결과 데이터 AND
+orlabel = np.array([[0],[1],[1],[1]]) #결과 데이터 OR
+xorlabel = np.array([[0],[1],[1],[0]]) #결과 데이터 XOR
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.losses import mse
+
+model = Sequential() #딥러닝 모델
+
+'''
+Dense : 밀집층
+1: 출력값의 갯수
+input_shape : 입력값의 갯수
+activation: 활성화 함수 알고리즘
+    linear : 선형함수
+    sigmoid : 0~1 사이의 값 변형
+    relu : 양수인 경우 선형함수, 음수인 경우 0    
+'''
+                  #1차원 갯수 2개. 
+model.add(Dense(1,input_shape=(2,), activation = 'relu'))
+
+'''
+compile : 모델설정, 모형설정. 가중치 찾는 방법 설정
+optimizer = SGD() : 경사하강법 알고리즘 설정. (미분에 의한경사를 0으로 만드는것)
+loss=mse : 손실함수. mse: 평균제곱오차 .
+        mse값이 가장 적은 경우의 가중치와 평향 구함.
+metrics=['acc']: 평가방법 지정. acc: 정확도
+=>손실함수의 값은 적은 값. 정확도는 1에 가까운 가중치
+  편향의 값을 찾도록 설정
+'''
+model.compile(optimizer=SGD(),loss=mse,metrics=['acc'])
+
+#학습하기
+'''
+data : 훈련데이터, 
+label: 정답
+epochs=300 : 300번 반복학습, 손실함수가 적고, 정확도가 높아지도록
+verbose=0 : 학습과정 출력 생략
+verbose=1 : 학습과정 상세 출력(기본값)
+verbose=2 : 학습과정 간략 출력
+'''
+
+model.fit(data, andlabel, epochs=300, verbose=2) #학습
+
+print(model.get_weights())
+print(model.predict(data))
+print(model.evaluate(data, andlabel))
+andlabel
+
+def AND(x1, x2) :          #1,0
+    x=np.array([x1,x2])    #입력값
+    w= np.array([0.6701532,0.5433795]) #가중치 활성치 함수로 W,B값을 정할수있고, 그게 정해지면
+    b=-0.44380492                #편향
+    tmp = np.sum(w*x) + b
+    if tmp <=0.5:
+        return 0
+    else : 
+        return 1
+    
+for xs in [(0,0),(0,1),(1,0),(1,1)] :
+    y=AND(xs[0], xs[1])
+    print(xs, "=>",y)
+
+from sklearn.neural_network import MLPClassifier
+
+clf = MLPClassifier(solver="lbfgs", alpha =1e-5, hidden_layer_sizes=(5,2),random_state=1)
+clf.fit(data,orlabel)
+clf.predict(data)
+
+#MNIST 데이터를 이용하여 숫자를 학습하여 숫자 인식하기
+#MNIST 데이터셋 다운받기
+from tensorflow.keras.datasets.mnist import load_data
+(x_train, y_train),(x_test, y_test)=load_data(path='mnist.npz')
+x_train.shape #(6000, 28, 28), 훈련데이터
+y_train.shape  #(6000, )
+x_test.shape #(10000,28,28), 테스트 데이터 
+y_test.shape  #(10000,)
+
+
+x_train[0,:]
+y_train[0]
+
+import matplotlib.pyplot as plt
+import numpy as np
+#0~59999 사이의 임의의 수 3개
+random_idx = np.random.randint(60000,size=3)
+random_idx
+for idx in random_idx:
+    img=x_train[idx, :]
+    label=y_train[idx]
+    plt.figure()
+    plt.imshow(img)
+    plt.title('%d-th data, label is %d' %(idx, label), fontsize =15)
+
+#검증데이터 생성: 학습 중간에 평가를 위한 데이터
+from sklearn.model_selection import train_test_split
+x_train, x_val, y_train, y_val = train_test_split\
+    (x_train, y_train, test_size=0.3, random_state=777)
+x_train.shape  #(42000, 28, 28)
+x_val.shape    #(18000, 28, 28)
+
+x_train[0]
+y_train[0]
+
+#데이터 정규화
+'''
+MinMax normalization : X= (x-min)/(max-min)
+Robust normalization: X=(x-중간값)/(3분위값-1분위값)
+Standardization : X=x-평균값/표준편차
+'''
+
+x_train[0]
+#MinMax normalization 정규화
+#현재 데이터: min : 0, max=255
+x_train =(x_train.reshape(42000,28*28))/255  #납작하게 했다는 먼??
+x_val =(x_val.reshape(18000,28*28))/255
+x_test=(x_test.reshape(10000,28*28))/255
+x_train[0]
+x_train.shape #(42000, 784)
+x_val.shape #(18000, 784)
+x_test.shape #(10000, 784)
+
+
+y_train[:10]
+#레이블 전처리: one-hot 인코딩하기 
+
+from tensorflow.keras.utils import to_categorical
+y_train=to_categorical(y_train)
+y_train[:10]
+y_val = to_categorical(y_val)
+y_test=to_categorical(y_test)
