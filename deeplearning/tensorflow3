@@ -1,0 +1,204 @@
+from tensorflow.keras.utils import to_categorical
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Flatten
+
+import pandas as pd
+pd.__version__
+import numpy as np
+np.__version__
+
+
+
+
+#################
+#fasion-MNIST 데이터셋 다운로드
+#1.데이터 수집
+from tensorflow.keras.datasets.fashion_mnist import load_data
+(ox_train, oy_train), (ox_test, oy_test)=load_data()
+print(ox_train.shape, ox_test.shape)  #(60000, 28, 28) (10000, 28, 28)
+class_names=['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+         'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+oy_train[:10]  #array([9, 0, 0, 3, 0, 2, 7, 2, 5, 5]
+ox_train[0]
+plt.imshow(ox_train[8])
+
+
+
+
+#2. 데이터 전처리
+#이미지 데이터 정규화
+x_train = ox_train/255 #minmax 정규화(x-min)/(max-min)
+x_test = ox_test/255
+
+#레이블을 onehot인코딩하기
+y_train = to_categorical(oy_train)
+y_test = to_categorical(oy_test)
+
+#ox_train--전처리 ---> x_train
+
+#검증데이터 분리. (훈련: 검증) = (7:3)
+x_train, x_val, y_train, y_val = \
+    train_test_split(x_train, y_train, test_size=0.3, random_state=777 )
+    
+    
+model1 = Sequential() #모델 생성
+model1.add(Flatten(input_shape = (28,28)))  #28*28=784 1차원 배열 변경
+model1.add(Dense(64, activation="relu"))
+model1.add(Dense(32, activation="relu"))
+model1.add(Dense(10, activation="softmax"))  
+model1.summary()
+model1.compile(optimizer ='adam',\
+               loss ='categorical_crossentropy', metrics=['acc'])
+    
+    
+#학습하기
+history1 = model1.fit(x_train, y_train, epochs=30,
+                      batch_size=128, validation_data=(x_val,y_val))
+history1.history["loss"][29] #0.20401223003864288
+history1.history["acc"][29]    #0.9244999885559082
+history1.history["val_loss"][29]    #0.35108426213264465
+history1.history["val_acc"][29]   #0.8856111168861389
+    
+history1.history["loss"]    
+    
+    
+model1.evaluate(x_test, y_test)
+results=model1.predict(x_test) #예측하기
+np.argmax(results[:10], axis=-1)
+np.argmax(y_test[:10], axis=-1)
+    
+    
+#평가하기
+from sklearn.metrics import confusion_matrix
+#혼동행렬 출력하기
+cm = confusion_matrix(np.argmax(y_test, axis=-1),\
+                      np.argmax(results, axis=-1))
+cm
+
+#혼동행렬을 heatmap으로 출력하기
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.figure(figsize=(7,7))
+sns.heatmap(cm, annot= True, fmt='d',cmap="Blues")
+plt.xlabel('predicted label', fontsize=15)
+plt.ylabel('true label', fontsize=15)
+#rotation=45 : 45도 틀어서 출력
+plt.xticks(range(10), class_names, rotation=45) #x축의 값을 class_names변경
+plt.yticks(range(10), class_names, rotation=0) #y축의 값을 class_names변경
+plt.show()    
+    
+#history1 데이터로 loss, acc - 훈련데이터, 검증데이터 부분을 선그래프로 출력하기
+import matplotlib.pyplot as plt
+his_dict=history1.history
+
+loss = his_dict['loss']    
+val_loss = his_dict['val_loss']
+epochs = range(1,len(loss) + 1) #1~30까지의 숫자
+fig = plt.figure(figsize =(10,5))
+ax1=fig.add_subplot(1,2,1) #1행 2열의 1번째 그래프 영역
+ax1.plot(epochs, loss, color = 'blue',label='train_loss')
+ax1.plot(epochs, val_loss, color = 'orange', label='val_loss')
+ax1.set_title('train and val loss')
+ax1.set_xlabel('epochs')
+ax1.set_ylabel('loss')
+ax1.legend()
+
+#정확도 출력테스트
+acc = his_dict['acc']   
+val_acc = his_dict['val_acc']   
+ax2=fig.add_subplot(1,2,2)  
+ax2.plot(epochs, acc, color = 'blue',label='train_acc')
+ax2.plot(epochs, val_acc, color = 'orange', label='val_acc')
+ax2.set_title('train and val acc')
+ax2.set_xlabel('epochs')
+ax2.set_ylabel('acc')
+ax2.legend()   
+plt.show() 
+    
+#model2 구성하여 학습하기
+#256,128개의 출력을 가지는 은닉층을 2개 추가
+model2 = Sequential() #모델 생성
+model2.add(Flatten(input_shape = (28,28)))  #28*28=784 1차원 배열 변경
+model2.add(Dense(256, activation="relu")) #256출력 은닉층 추가
+model2.add(Dense(128, activation="relu"))
+model2.add(Dense(64, activation="relu"))
+model2.add(Dense(32, activation="relu"))
+model2.add(Dense(10, activation="softmax"))  
+model2.summary()
+model2.compile(optimizer ='adam',\
+               loss ='categorical_crossentropy', metrics=['acc'])
+history2=model2.fit(x_train, y_train, epochs=30,
+                    batch_size=128, validation_data=(x_val, y_val))    
+    
+
+model1.evaluate(x_test, y_test) #[2.3396735191345215, 0.19679999351501465]
+model2.evaluate(x_test, y_test) #[0.42390936613082886, 0.8877000212669373]  
+    
+ 
+#모델저장하기
+model1.save("fashion1.h5")    
+model2.save("fashion2.h5")     
+#저장된 모델 로드
+from keras.models import load_model
+m1 = load_model("fashion1.h5")
+m2 = load_model("fashion2.h5")   
+ 
+m1.evaluate(x_test, y_test) #[2.3396735191345215, 0.19679999351501465]
+m2.evaluate(x_test, y_test) #[0.42390936613082886, 0.8877000212669373]     
+   
+    
+results = m1.predict(x_test) #예측하기
+results2=m2.predict(x_test) #예측하기
+np.argmax(results[:10], axis=-1)  
+np.argmax(results2[:10], axis=-1)  
+np.argmax(y_test[:10], axis=-1)     
+    
+   
+    
+#예측이 틀린 이미지 16개 프린트
+count=0
+for idx in range(len(results)) : #0~15까지
+    number_sol = np.argmax(results, axis=1)[idx]
+    number_y = np.argmax(y_test, axis=1)[idx]
+    if number_y != number_sol:
+        
+        plt.subplot(4,4,count+1) #4행4열
+        plt.axis('off')
+        plt.imshow(x_test[idx].reshape(28,28)) #2차원 배열. 그래프
+        plt.title('Pred:%s, \n lab:%s' % (class_names[number_sol], class_names[number_y]),fontsize=8)
+        
+        count +=1
+        if count > 15 : break
+plt.tight_layout()
+plt.show()
+
+
+
+#저장된 이미지 예측하기
+#samlple 이미지 저장
+from PIL import Image
+im=Image.fromarray(ox_test[0]) #오리지널 이미지가 들어가야해. 안그러면 cannot write f jpg 나옴
+im.save("img/fashion.jpg")
+
+
+#read image 예측
+readimage =Image.open('img/fashion.jpg')
+numpyimage=np.asarray(readimage)
+numpyimage
+
+#numpy shape setting
+numpyimage.shape
+
+#전처리 자료
+normalimage=numpyimage/255
+normalimage
+normalimage=normalimage.reshape(1,28*28)
+normalimage.shape
+#predict를 위한 자료로 reshape (1,784)
+onetest = model1.predict(normalimage)
+np.argmax(onetest, axis=1)[0] #7   
+plt.imshow(numpyimage.reshape(28,28)) #2차원 배열. 그래프
