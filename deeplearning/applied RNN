@@ -1,0 +1,140 @@
+'''
+imdb데이터 셋
+-영화리뷰에 대한 데이터 5만개
+-50%씩 긍정리뷰, 부정리뷰
+-전처리가 완료된상태. ->내용이 숫자로 변환됨
+'''
+
+from tensorflow.keras.datasets import imdb
+num_words=10000
+(X_train, y_train),(X_test, y_test) = imdb.load_data(num_words=num_words)
+print(X_train.shape, X_test.shape)
+print(X_train.shape, X_test.shape)
+print(X_train[1])
+print(X_train[0])
+print(len(X_train[0])) #단어의 갯수 218
+print(len(X_train[1])) #단어의 갯수 189
+list(imdb.get_word_index().items())[0] #('fawn', 34701)(단어, 토큰인덱스)
+list(imdb.get_word_index().items())
+
+#토큰인덱스의 값이 작은 경우 빈번한 단어임.
+#key: 단어
+#value: 토큰인덱스
+imdb_get_word_index ={}
+for key, value in imdb.get_word_index().items():
+    imdb_get_word_index[value] = key #imdb_get_word_index[34701]= fawn
+for i in range(1,11): #1~10 토큰인덱스값 출력
+    print('{}번쨰로 가장 많이 쓰인 단어={}'.format\
+          (i, imdb_get_word_index[i]))
+
+#훈련데이터의 문장길이의 평균, 중간값, 최대값, 최소값 출력하기
+import numpy as np
+#훈련데이터의 문장의 길이를 배열로 저장
+lengths = np.array([len(x) for x in X_train])
+lengths[:10]
+X_train[0]
+#평균, 중간값, 최대값, 최소값
+np.mean(lengths)  #평균
+np.median(lengths) #중간값
+np.max(lengths)   #최대값
+np.min(lengths)  #최소값
+
+#단어의 갯수를 히스토그램으로 출력하기
+import matplotlib.pyplot as plt
+plt.hist(lengths)
+plt.zlabel("length")
+plt.ylabel("frequency")
+
+y_train[:10]  #0:부정, 1:긍정 (25000,) 1차원
+
+
+
+#딥러닝을 위해서는 데이터의 길이가 동일해야함
+#-> 패딩작업이 필요함: 데이터의 길이가 지정한 길이보다 작으면 0으로 채움
+#                   지정한 길이보다 크면, 지정길이로 잘라냄.
+
+
+
+#패딩방법
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+a1=[[1,2,3]]
+a2=[[1,2,3,4,5,6,7,8]]
+#maxlen: 지정길이
+#padding='pre' : 앞쪽을 0으로 채움. 기본값
+#padding='post' : 뒤쪽을 0으로 채움
+a1_pre = pad_sequences(a1, maxlen=5) #3->5. 앞쪽 0으로 채움
+a2_pre = pad_sequences(a2, maxlen=5) #8->5. 앞쪽 3개 잘라냄
+print(a1_pre) #[[0 0 1 2 3]]
+print(a2_pre) #[[4 5 6 7 8]]
+
+
+a1_post = pad_sequences(a1, maxlen=5, padding='post')
+a1_post # array([[1, 2, 3, 0, 0]])
+a1_pre = pad_sequences(a1, maxlen=5, padding='pre')
+a1_pre  #array([[0, 0, 1, 2, 3]])
+
+a2_post = pad_sequences(a2, maxlen=5, padding='post')
+a2_post    #  !!!! array([[4, 5, 6, 7, 8]]) <-안되네
+a2_pre = pad_sequences(a2, maxlen=5, padding='pre')
+a2_pre # array([[4, 5, 6, 7, 8]])
+
+
+#-------------------------------
+
+max_len = 500
+pad_X_train = pad_sequences(X_train, maxlen=max_len, padding='pre')
+len(pad_X_train[0])
+len(pad_X_train[1])
+pad_X_train[0]
+
+#모델설정
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Embedding, Flatten
+
+num_words #10000
+
+model = Sequential()
+model.add(Embedding(input_dim=num_words, output_dim=32, input_length=max_len))
+model.add(Flatten())
+model.add(Dense(1,activation= 'sigmoid')) # 0또는 1
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc'])
+model.summary()
+
+
+history = model.fit(pad_X_train, y_train, batch_size =32, 
+                epochs=30, validation_split=0.2)
+
+import matplotlib.pyplot as plt
+plt.figure(figsize=(12,4))
+plt.subplot(1,2,1)
+plt.plot(history.history['loss'],'-b',label='loss')
+plt.plot(history.history['val_loss'],'r--', label='val_loss')
+plt.xlabel('Epoch')
+plt.legend()
+plt.subplot(1,2,2)
+plt.plot(history.history['acc'],'g-',label='accuracy')
+plt.plot(history.history['val_acc'],'k--', label='val_accuracy')
+plt.xlabel('Epoch')
+plt.legend()
+plt.show()
+
+#테스트 데이터로 평가하기
+pad_X_test = pad_sequences(X_test, maxlen=max_len, padding='pre')
+model.evaluate(pad_X_test, y_test) ##[0.8034654855728149, 0.8708000183105469]
+
+#예측
+pad_pre = model.predict(pad_X_test)
+
+#pad_pre
+count=0
+for i in range(len(pad_pre)) :
+    if pad_pre[i] > 0.5 : #sigmoid function
+        tpre=1
+    else:
+        tpre =0
+    if tpre ==y_test[i] :
+        count +=1
+    #print(tpre, y_test[i])
+
+print(count)
+print(count/len(pad_pre)*100 )  #87.08%
