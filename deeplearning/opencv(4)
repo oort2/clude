@@ -1,0 +1,122 @@
+import numpy as np, cv2
+import matplotlib.pyplot as plt
+size = (40,40) #이미지 한개의 크기
+nclass, nsample = 10,20
+train_image=cv2.imread\
+    ('images/train_numbers.png', cv2.IMREAD_GRAYSCALE)
+train_image.shape
+train_image = train_image[5:405, 6:806] #여백제거
+train_image.shape
+
+#np.hsplit : 수평 분리. 열로 분리. 20개로 분리
+#np.vsplit: 수직분리. 행으로 분리. 10개로 분리.
+cells =[np.hsplit(row, nsample) for row in np.vsplit(train_image, nclass)]
+print('cells 형태', np.array(cells).shape) #(10,20,40,40)
+
+'''
+cv2.threshold(img, threshold_value, value, flag)
+img:grayScale이고 
+threshold_value는 픽셀 문턱값이고 
+문턱값 이상이면 value로 바꾸어줍니다. 
+
+flag에서도 다양한 종류가 존재합니다. 
+cv2.THRESH_BINARY: threshold보다 크면 value이고 아니면 0으로 바꾸어 줍니다. 
+cv2.THRESH_BINARY_INV: threshold보다 크면 0이고 아니면 value로 바꾸어 줍니다.   
+cv2.THRESH_TRUNC: threshold보다 크면 value로 지정하고 작으면 기존의 값 그대로 사용한다. 
+cv2.THRESH_TOZERO: treshold_value보다 크면 픽셀 값 그대로 작으면 0으로 할당한다. 
+cv2.THRESH_TOZERO_INV: threshold_value보다 크면 0으로 작으면 그대로 할당해준다. 
+'''
+
+temp=cv2.threshold(cells[0][0], 128,255,cv2.THRESH_BINARY)
+plt.imshow(cells[0][0])
+plt.imshow(temp[1])
+
+
+#bitwise함수: 2개의 이미지 합하기
+import numpy as np, cv2
+image1 = np.zeros((300,300), np.uint8) #300행 300열 검은색 영상 생성
+image2=image1.copy()
+image1.shape
+cv2.imshow("image1", image1)
+cv2.imshow("image2", image2)
+cv2.waitKey(0)
+
+h, w = image1.shape[:2] #300,300
+print(h,w)
+cx,cy = w//2, h//2
+print(cx,cy)
+#원을 표시
+#(cx,cy) : 원의 중심 좌표
+#100: 반지름
+#255: 색상값
+#-1: 내부가 채워진 원
+cv2.circle(image1,(cx,cy), 100,255,-1) #중심에 원그리기
+
+#사각형 표시
+#(0,0,cx,h) : (시작x좌표, 시작y좌표, w,h)
+#255 :색상값
+
+cv2.rectangle(image2, (0,0,cx,h,), 255,-1)
+
+cv2.imshow("image1", image1)
+cv2.imshow("image2", image2)
+cv2.waitKey(0)
+
+
+#두개의 이미지 합하기
+image3 = cv2.bitwise_or(image1, image2)
+image4 = cv2.bitwise_and(image1, image2)
+image5 = cv2.bitwise_xor(image1, image2)
+image6 = cv2.bitwise_not(image1, image2)
+cv2.imshow("bitwise_or", image3)
+cv2.imshow("bitwise_and", image4)
+cv2.imshow("bitwise_xor", image5)
+cv2.imshow("bitwise_not", image6)
+cv2.waitKey(0)
+
+
+import numpy as np, cv2
+face_cascade = cv2.CascadeClassifier\
+    ("haarcascade_frontalface_alt2.xml") #정면검출기
+eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml") #눈검출기
+image = cv2.imread('images/face1.jpg', cv2.IMREAD_COLOR)
+cv2.imshow("image", image)
+image.shape #(349,500,3)
+#cvtColor() : 이미지변환
+#cv2.COLOR_BGR2GRAY : 컬러이미지 -> 흑백이미지
+#cv2.COLOR_BGR2HSV : 컬러이미지 -> 색상중 지배색상 변환
+#cv2.COLOR_BGR2RGB : 컬러이미지 -> 색상 반전
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) #명암도 영상 변환
+cv2.imshow("gray", gray)
+cv2.waitKey(0)
+gray.shape #(349,500)
+
+gray2 = cv2.equalizeHist(gray)#히스토그램 평활화
+cv2.imshow("image", image)
+cv2.imshow("image", gray)
+cv2.imshow("gray", gray2)
+cv2.waitKey(0)
+#gray : 이미지값
+#1.1 : 영상축소. 기본값 1.1
+#2: 최소 이웃되는 사각형 값
+#(100, 100) : 최소객체의 크기.
+faces = face_cascade.detectMultiScale(gray, 1.1,2,0,(100,100)); #얼굴검출
+
+
+if faces.any() : #얼굴 사각형 검출?
+    x, y, w, h = faces[0] #사각형의 좌표
+    #face_image : 얼굴 영역
+    face_image = image[y:y + h, x:x + w] #얼굴 영역 영상 가져오기
+    cv2.imshow("face", face_image)
+    eyes = eye_cascade.detectMultiScale\
+        (face_image, 1.15, 7, 0, (25,20)) #눈검출 수행
+    if len(eyes) == 2 : #눈 사각형이 검출되면
+        for ex, ey, ew, eh in eyes:
+            center = (x + ex + ew // 2, y + ey + eh //2)
+            cv2.circle(image, center, 10, (0, 255,0), 2) #눈 중심에 원그리기
+    else:
+        print("눈 미검출")
+    cv2.rectangle(image, faces[0], (255,0,0),2) #얼굴 검출 사각형 그리기
+    cv2.imshow("image", image)
+else : print("얼굴 미검출")
+cv2.waitKey(0)
