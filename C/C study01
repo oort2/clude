@@ -1,0 +1,64 @@
+//01. 수행 순서
+//전처리기(preprocessor)->컴파일러(compiler)->어셈블러(assembler)->링커(linker)
+
+//02. 전역변수와 지역변수의 실행 순서별 변
+#include<stdio.h>
+int main(void){
+  int a= 1, b=2, c=3;
+  {
+    int b= 4, c=5;
+    a=b; //a에 지역변수 b값인 4를 넣음 
+    {
+      int c;
+      c=b; //해당 중괄호 내부엔 b가 없지만 가장 가까운 b값인 4를 넣음 그러나 중괄호 닫히면 여기의 c는 사라짐
+    }
+    printf("%d %d %d\n", a,b,c); //4 4 5 
+  } 
+return 0;
+}
+
+//03.정수/정수= 정수, 실수/정수=실수
+#include<stdio.h>
+int main(){
+  int a, b;
+  a= 4*(1/2); //0   4*0.5가 아니라 4*0이됨(0.5에서 .5를 버림)
+  b=a++; //a++ => a+1 
+  printf("%d", b); //0 
+  return 0;
+}
+
+//04.선행, 후행 연
+#include<stdio.h>
+int main(){
+  int a=5, b=5;
+  a *=3 + b++;  //우선 3+5한 다음, b를 6으로 변환하라는 말. 
+  printf("%d, %d", a, b); //40, 6
+  return 0;
+}
+
+// 05. 배열이 아닌 콤마연산자에 들어가는 값
+#include<stdio.h>
+int main(){
+  int a = (10, 20); // 배열이 아닌 콤마연산자는 제일 오른쪽 값을 넣으면 됨. a=20
+  printf("%d, ", a);
+
+  int b = (10, 20, 30); // b=30
+  printf("%d, ", b);
+
+  int c =(10, (20, 30), 40); // b=40
+  printf("%d",c);     //20, 30, 40
+  return 0;
+}
+
+//06. 연산자별 출력
+#include<stdio.h>
+int main()
+{
+  int i = 3;
+  int j = 4;
+  if( (++i > j--)&&(i++ < --j) ) i=i-- + ++j; // i=4, j=3 (연산할떄 j는 4를 사용) 
+                                              //&&연산자는 좌우항이 모두 같아야하는데 좌항이 거짓이면 우항까지 연산하지 않음
+  else j=i-- - --j; // i=3, j=2
+  printf("%d %d\n", i,j);
+  return 0;
+}
