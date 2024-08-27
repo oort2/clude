@@ -1,0 +1,90 @@
+// 01.참거짓 연산
+#include<stdio.h>
+int main()
+{
+int a= 20, b = 30;
+if(a++ <= 20 || ++b > 30) //둘중 하나만 참이면 참 , 앞에서 참이면 뒷부분가지 연산실행하지 않음 a=21 b=30
+  b++;  //a=21 b=31
+printf("%d, %d\n", a++, b );
+return 0;
+}
+
+// 02.참거짓 연산
+// 언어(참, 거짓): C(1,0), Java(true, false), Python(True, False)
+#include<stdio.h>
+ intmain(void) {
+ int a=3, b=4, c=2;  
+ int r1, r2, r3;
+
+ r1=b<=4 || c==2; //참, r1=1
+ r2= (a>0)&&(b<5); //참, r2=1
+
+ printf("%d", r1+r2);
+ return0;
+}
+
+// 연산자 우선순위
+//지역변수는 값 안정하면 쓰레기값이 들어감. 전역변수는 0이 들어감. 
+ #include<stdio.h>
+ intmain() {
+ int a=3+5, b=1, c; //a= 8, b=1,  
+ int ap, bp;
+ ap=a++; //ap=8, a=9
+ bp=++b; //bp=2, b=2
+ b=3* (ap==8); // b=3*1 (ap==8 은 참이기 때문에 1)
+ c=5* (ap!=8); //c=0
+ printf("%d %d %d %d %d", a, b, c, ap, bp); // 9 3 0 8 2
+ return0;
+}
+
+//실수의 표현
+ #include<stdio.h>
+ intmain() {
+ doubled_value;
+ float f_value=5.65; //f_value=5.65
+ int n;
+ d_value= f_value; //d_value=5.65
+ d_value=d_value+0.5; //d_value=6.15
+ n=(int)d_value; //n=6 뒷부분 버림. 형변환은 반올림 없음. 
+ printf("%3.1f,%d", d_value, n);  //6.2, 6
+  //%3.1f= 3개의 공간을 확보한 후(그래도 정수는 다나와야함), 소수점 한자리만 출력해라(반올림 필요함) . 
+ return0;
+}
+
+//10, 8, 16진수 표현 
+//우선 2진수로 변하게 한다음 8은 3자리씩, 16은 4자리씩 자른다 
+ #include<stdio.h>
+ intmain() {
+ int a=16; //2진수: 10000
+ printf("%d, ", a); //16
+ printf("%o, ", a); //20
+ printf("%x ", a);  //10
+
+ int b=17; //2진수: 10001
+ printf("\n%d, ", b); //17
+ printf("%o, ", b);   //21
+ printf("%x ", b);   //11
+ return;
+}
+
+//
+ #include<stdio.h>
+ intmain() {
+ int x=0x11;
+ int y, z;
+ y=x&0x0f;
+ z=x | 0x0f;
+ printf("x=%d, y=%d, z=%d", x, y, z);
+ return0;
+}
+
+//
+ #include<stdio.h>
+ intmain(int argc, char *argv[]) {
+ int a=4;
+ int b=7;
+ int c=a | b;
+
+ printf("%d", c);
+ return0;
+}
