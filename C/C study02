@@ -67,24 +67,24 @@ return 0;
  return;
 }
 
-//
+//16진수, 10진수 연산
  #include<stdio.h>
  intmain() {
- int x=0x11;
+ int x=0x11;  //16진수 11이 들어가있다는 말. 2진수로 바꾸면 10001 z=17
  int y, z;
- y=x&0x0f;
- z=x | 0x0f;
- printf("x=%d, y=%d, z=%d", x, y, z);
+ y=x & 0x0f;    //x 와 f를 비트연산하라는 말 2진수로 바꾸면 1111, &연산 하면 y=1
+ z=x | 0x0f;  //x와 f를 or 연산하라는 말 2진수로 바꾸면 11111 , z=31
+ printf("x=%d, y=%d, z=%d", x, y, z);  //x=17 y=1, z=31
  return0;
 }
 
 //
  #include<stdio.h>
  intmain(int argc, char *argv[]) {
- int a=4;
- int b=7;
- int c=a | b;
+ int a=4; //2진수: 100
+ int b=7; //2진수: 111
+ int c=a | b; //둥중 하나만 참이면 참이라 111, 10진수: 7
 
- printf("%d", c);
+ printf("%d", c); // 7
  return0;
 }
