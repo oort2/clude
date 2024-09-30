@@ -1,1 +1,124 @@
-c
+//~ 붙는 절대값 계산
+ #include<stdio.h>
+ intmain() {
+ int num1=5;
+ int num2=-5;
+ printf("%d,%d", ~num1, ~num2);  //~는 -붙이는데 절대값이니까 1씩 더 뺴줌(양수는 더해줌). -6, 4
+ return0;
+ }
+
+//2진수 계산과 define 정의
+ #define VALUE1 1 //앞으로 나오는 모든 VALUE1은 1을 가지고 있다는 말, 여기선 1
+ #define VALUE2 2  //앞으로 나오는 모든 VALUE1은 2을 가지고 있다는 말, 여기선 2
+ intmain() {
+ float i;
+ int j, k,m;
+ i =100 / 300; //정수/정수 = 정수 이므로 i= 0.0
+ j =VALUE1&VALUE2;  //0001 & 0010 이므로 0000
+ k=VALUE1 | VALUE2; //0001|0010 이므로 0011, = 3
+ if( j &&k || i )m= i + j;
+ elsem= j +k;
+ printf("i =%.1f j =%d k=%d m=%03d\n", i, j, k,m); //%.1f = 소수점 한자리만 표현(정수는 그대로 출력) 
+ return0;
+ } // i=0.0 j=0 k=3 m=003
+
+//16진수 계산
+ #include<stdio.h>
+ intmain() {
+ int x=0x15213F10>>4; //4칸 밀어서 15213F1이 됨(0삭제)
+ char y= (char) x; //CHAR 만들어가서 F1, 이건 2진수로 1111001, 캐릭터의 경우 맨앞 1은 음수를 의미(-000111, -15임)
+ unsignedchar z=(unsigned char) x; //부호가 없는 절대값 1111001 -> 241
+ printf("%d,%u", y, z);
+ return0;
+ }
+ 
+25. C프로그램의실행후,출력결과값은?
+ #include<stdio.h>
+ intmain(void) {
+ int a, b;
+ a=20;
+ b=( a>10 ) ?a+a : a*a;
+ printf("b=%d\n", b);
+ return0;
+ }
+ 26.다음프로그램조건문에대해삼항조건연산자를사용하여표현하시오.
+ int i =7, j =9;
+ int k;
+ if (i > j)
+ k= i- j;
+ else
+ k= i + j;
+ 27.다음C프로그램의실행결과는?
+ #include<stdio.h>
+ intmain() {
+ int a=0, b=1;
+ switch( a ) {
+ case0 : printf("%d\n", b++); break;
+ case1 : printf("%d\n", ++b); break;
+ default : printf("%d\n", b); break;
+ }
+ return0;
+ }
+[정보처리기사필기/실기통합]프로그램문제풀이특강C언어
+28.다음C프로그램의실행결과는?
+ #include<stdio.h>
+ intmain() {
+ int c=1;
+ switch (3) {
+ case1: c+=3;
+ case2: c++;
+ case3: c=0;
+ case4: c+=3;
+ case5: c-=10;
+ default: c--;
+ }
+ printf("%d", c);
+ return0;
+ }
+ 29.다음C프로그램의실행결과는?
+ #include<stdio.h>
+ intmain(){
+ int n[3]= {73, 95, 82};
+ int sum=0;
+ for (int i=0; i<3; i++){
+ sum+=n[i];
+ }
+ switch(sum/30){
+ case10:
+ case9: printf("A");
+ case8: printf("B");
+ case7:
+ case6: printf("C");
+ default: printf("D");
+ }
+ return0;
+ }
+[정보처리기사필기/실기통합]프로그램문제풀이특강C언어
+30.다음C프로그램의실행결과는?
+ #include<stdio.h>
+ intmain() {
+ int a, b;
+ a=b=1;
+ if( a==2 )
+ b=a+1;
+ else if( a==1 )
+ b=b+1;
+ else
+ b=10;
+ printf("%d,%d\n", a, b);
+ return0;
+ }
+ 31.다음은어느학생이C언어로작성한학점계산프로그램이다.출력결과는?
+ #include<stdio.h>
+ intmain()
+ {
+ int score=85;
+ char grade;
+ if (score>=90) grade='A';
+ if (score>=80) grade='B';
+ if (score>=70) grade='C';
+ if (score<70) grade='F';
+ printf("학점:%c\n", grade);
+ return0;
+ }
+ 32.다음C프로그램의실행결과를쓰
